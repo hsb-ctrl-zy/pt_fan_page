@@ -1,0 +1,733 @@
+<!-- 날짜 선택 드롭다운 버튼 추가 -->
+<!-- 제목에 이미지 삽입 -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코코롱의 코코리움</title>
+    <!-- 브라우저 탭 아이콘 (Favicon) 설정 -->
+    <link rel="icon" href="https://github.com/hsb-ctrl-zy/pt_fan_page/blob/main/image/happy.png?raw=true" type="image/png">
+    
+    <style>
+        @font-face {
+            font-family: 'OngleipParkDahyeon';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+            font-weight: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --bg-sky: #C2E9FB;
+            --bg-lavender: #E0C3FC;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #555;
+            --pastel-pink: #FFB6C1;
+            --pastel-blue: #ADD8E6;
+            --pastel-purple: #DCD0FF;
+            --logo-purple: #FF9EE2;
+            --logo-purple-shadow: #ffffff;
+            --tier-s: #FFD700;
+            --tier-a: #C0C0C0;
+            --tier-b: #CD7F32;
+            --main-font: 'OngleipParkDahyeon', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--main-font);
+            background: linear-gradient(180deg, var(--bg-sky) 0%, var(--bg-lavender) 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        header h1 {
+            margin: 0 0 15px 0;
+            color: var(--logo-purple);
+            text-shadow: 2px 2px 0px var(--logo-purple-shadow);
+            font-size: 32px; /* rem 대신 px로 고정하여 비례 안정화 */
+            letter-spacing: 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .header-icon {
+            height: 48px;
+            width: 48px;
+            display: inline-block;
+            vertical-align: middle;
+            object-fit: contain;
+        }
+
+        /* 왼쪽 이미지와 '코' 사이 간격 */
+        header h1 img:first-child {
+            margin-right: 10px; /* 여백이 넓어 보인다면 이 값을 줄이세요 (예: 10px) */
+            transform: translateY(-1px); /* 수직 높이 미세 보정 */
+        }
+
+        /* 오른쪽 이미지와 '지' 사이 간격 */
+        header h1 img:last-child {
+            margin-left: 8px; /* 오른쪽 간격 조정 */
+            transform: translateY(0px);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: background 0.3s;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: #fff;
+            color: #888;
+        }
+
+        main {
+            width: 90%;
+            max-width: 1200px;
+            padding: 40px 0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            border-bottom: 2px dashed #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .cal-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .cal-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .cal-nav button, .cal-nav select, .view-mode button {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-family: var(--main-font);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            outline: none;
+        }
+
+        .cal-nav button:hover, .view-mode button:hover {
+            background: var(--pastel-pink);
+            color: #fff;
+        }
+
+        .view-mode button.active {
+            background: var(--pastel-pink);
+            color: #fff;
+            border-color: var(--pastel-pink);
+        }
+
+        .current-label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 130px;
+            text-align: center;
+        }
+
+        .date-picker-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ----- 상단 타임라인 트랙 패널 ----- */
+        .timeline-overview {
+            background: #fff;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
+            border: 1px solid #f0f0f0;
+        }
+
+        .timeline-overview h3 {
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            color: #777;
+        }
+
+        .event-track-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .event-track-item {
+            display: flex;
+            align-items: center;
+            background: #fafafa;
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .track-badge {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .track-title {
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .track-date {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* ----- 달력 그리드 ----- */
+        .timeline-container {
+            overflow-x: auto;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            min-width: 600px;
+        }
+
+        .cal-day-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 8px 0;
+            color: #777;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 8px;
+        }
+
+        .cal-cell {
+            background: #fff;
+            border-radius: 12px;
+            min-height: 70px;
+            padding: 8px;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .cal-cell.other-month {
+            opacity: 0.35;
+        }
+
+        /* 오늘 날짜 강조 스타일 */
+        .cal-cell.is-today {
+            border: 2px solid var(--pastel-pink);
+            background-color: #fff9fb;
+        }
+
+        .date-num {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .event-dots-container {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .event-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .bg-pink { background: #FF85C0; }
+        .bg-blue { background: #69C0FF; }
+        .bg-purple { background: #B37FEB; }
+
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            background: #f9f9f9;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        .log-item.new { border-left: 4px solid var(--pastel-pink); }
+        .d-day { color: #ff6b81; font-weight: bold; }
+
+        .gacha-display {
+            width: 100%;
+            height: 120px;
+            background: #eee;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #aaa;
+            overflow: hidden;
+        }
+        .gacha-display.sr { background: var(--tier-s); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .gacha-display.r { background: var(--tier-a); color: white; }
+        .gacha-display.n { background: #fff; color: #555; }
+
+        .btn-draw {
+            width: 100%;
+            padding: 12px;
+            background: var(--pastel-pink);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-family: var(--main-font);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .btn-draw:hover { box-shadow: 0 4px 10px rgba(255,182,193,0.5); }
+        .btn-draw:active { transform: scale(0.98); }
+
+        .tier-container { display: flex; flex-direction: column; gap: 8px; }
+        .tier-row { display: flex; align-items: center; background: #fff; border-radius: 12px; min-height: 50px; padding: 5px; border: 1px solid #eee;}
+        .tier-label { width: 40px; height: 40px; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.2rem; font-weight: bold; margin-right: 10px; }
+        .label-s { background: var(--tier-s); }
+        .label-a { background: var(--tier-a); }
+        .label-b { background: var(--tier-b); }
+        .tier-items { flex: 1; display: flex; gap: 5px; min-height: 40px; }
+        .item-pool { margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 12px; display: flex; gap: 8px; flex-wrap: wrap;}
+        .item { width: 45px; height: 45px; background: var(--pastel-purple); border-radius: 10px; cursor: grab; display: flex; justify-content: center; align-items: center; color: white; font-size: 0.9rem;}
+
+        .home-welcome {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .home-welcome h2 {
+            border-bottom: none;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>
+            <img src="https://github.com/hsb-ctrl-zy/pt_fan_page/blob/main/image/hami.png?raw=true" alt="하미" class="header-icon">
+            <span>코코롱의 코코리움 - 포켓트윈 팬페이지</span>
+            <img src="https://github.com/hsb-ctrl-zy/pt_fan_page/blob/main/image/rumi.png?raw=true" alt="루미" class="header-icon">
+        </h1>
+        <nav>
+            <ul>
+                <li><a class="nav-btn active" onclick="openTab(event, 'tab-home')">홈</a></li>
+                <li><a class="nav-btn" onclick="openTab(event, 'tab-calendar')">캘린더</a></li>
+                <li><a class="nav-btn" onclick="openTab(event, 'tab-gacha')">가챠 시뮬레이터</a></li>
+                <li><a class="nav-btn" onclick="openTab(event, 'tab-tier')">티어 리스트</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 1. 홈 -->
+        <div id="tab-home" class="tab-content active">
+            <div class="card home-welcome">
+                <h2>환영합니다!</h2>
+                <p>상단 메뉴를 클릭하여 원하는 기능을 이용해 보세요.</p>
+            </div>
+        </div>
+
+        <!-- 2. 캘린더 탭 -->
+        <div id="tab-calendar" class="tab-content">
+            <div class="card calendar">
+                <h2>이벤트 캘린더</h2>
+                
+                <div class="cal-controls">
+                    <div class="cal-nav">
+                        <button onclick="changePeriod(-1)">◀ 이전</button>
+                        
+                        <!-- 년, 월 선택 터치 메뉴 -->
+                        <div class="date-picker-group">
+                            <select id="selectYear" onchange="onSelectDateChange()"></select>
+                            <select id="selectMonth" onchange="onSelectDateChange()"></select>
+                        </div>
+
+                        <button onclick="goToToday()">오늘</button>
+                        <span class="current-label" id="currentLabel" style="display: none;"></span>
+                        <button onclick="changePeriod(1)">다음 ▶</button>
+                    </div>
+                    <div class="view-mode">
+                        <button id="btnMonth" class="active" onclick="setViewMode('month')">월별</button>
+                        <button id="btnWeek" onclick="setViewMode('week')">주별</button>
+                    </div>
+                </div>
+
+                <div class="timeline-overview">
+                    <h3>진행 중인 이벤트 타임라인</h3>
+                    <div class="event-track-list" id="eventTrackList">
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+            </div>
+
+            <div class="card event-log">
+                <h2>이벤트 로그 (+3일)</h2>
+                <div class="log-item new">
+                    <span>[가챠] 파스텔 엔젤</span>
+                    <span class="d-day">D+1</span>
+                </div>
+                <div class="log-item">
+                    <span>[미션] 체리 수집 주간</span>
+                    <span class="d-day">D+3</span>
+                </div>
+                <div class="log-item">
+                    <span>[복각] 고스 룩 테마</span>
+                    <span>종료</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 가챠 시뮬레이터 탭 -->
+        <div id="tab-gacha" class="tab-content">
+            <div class="card gacha">
+                <h2>가챠 시뮬레이터</h2>
+                <div class="gacha-display" id="gachaDisplay">뽑기를 진행하세요</div>
+                <button class="btn-draw" onclick="drawGacha()">1회 뽑기 (도넛 100개)</button>
+            </div>
+        </div>
+
+        <!-- 4. 티어 리스트 메이커 탭 -->
+        <div id="tab-tier" class="tab-content">
+            <div class="card tier-list">
+                <h2>티어 리스트 메이커</h2>
+                <div class="tier-container">
+                    <div class="tier-row"><div class="tier-label label-s">S</div><div class="tier-items" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+                    <div class="tier-row"><div class="tier-label label-a">A</div><div class="tier-items" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+                    <div class="tier-row"><div class="tier-label label-b">B</div><div class="tier-items" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+                </div>
+                <div class="item-pool" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="item" draggable="true" ondragstart="drag(event)" id="item1">윙크</div>
+                    <div class="item" draggable="true" ondragstart="drag(event)" id="item2">헤어</div>
+                    <div class="item" draggable="true" ondragstart="drag(event)" id="item3">안대</div>
+                    <div class="item" draggable="true" ondragstart="drag(event)" id="item4">원피스</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function openTab(evt, tabId) {
+            const contents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove("active");
+            }
+
+            const buttons = document.getElementsByClassName("nav-btn");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        let currentDate = new Date(2026, 7, 1); // 2026년 8월 기준
+        let viewMode = 'month';
+
+        const eventsData = [
+            { id: 1, title: "[가챠] 파스텔 엔젤", start: "2026-08-02", end: "2026-08-08", color: "bg-pink" },
+            { id: 2, title: "[미션] 체리 수집 주간", start: "2026-08-05", end: "2026-08-12", color: "bg-blue" },
+            { id: 3, title: "[복각] 고스 룩 테마", start: "2026-08-18", end: "2026-08-25", color: "bg-purple" },
+            { id: 4, title: "[이벤트] 가을/겨울 테마", start: "2026-09-01", end: "2026-09-15", color: "bg-pink" }
+        ];
+
+        // 년/월 드롭다운 초기화 (2024년부터 2030년까지)
+        function initDateSelectors() {
+            const yearSelect = document.getElementById('selectYear');
+            const monthSelect = document.getElementById('selectMonth');
+
+            const startYear = 2024;
+            const endYear = 2030;
+
+            yearSelect.innerHTML = '';
+            for (let y = startYear; y <= endYear; y++) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = `${y}년`;
+                yearSelect.appendChild(opt);
+            }
+
+            monthSelect.innerHTML = '';
+            for (let m = 0; m < 12; m++) {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = `${m + 1}월`;
+                monthSelect.appendChild(opt);
+            }
+        }
+
+        function updateSelectorsToCurrentDate() {
+            document.getElementById('selectYear').value = currentDate.getFullYear();
+            document.getElementById('selectMonth').value = currentDate.getMonth();
+        }
+
+        function onSelectDateChange() {
+            const selectedYear = parseInt(document.getElementById('selectYear').value);
+            const selectedMonth = parseInt(document.getElementById('selectMonth').value);
+            
+            currentDate.setFullYear(selectedYear);
+            currentDate.setMonth(selectedMonth);
+            renderCalendar();
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            document.getElementById('btnMonth').classList.toggle('active', mode === 'month');
+            document.getElementById('btnWeek').classList.toggle('active', mode === 'week');
+            renderCalendar();
+        }
+
+        function changePeriod(delta) {
+            if (viewMode === 'month') {
+                currentDate.setMonth(currentDate.getMonth() + delta);
+            } else {
+                currentDate.setDate(currentDate.getDate() + (delta * 7));
+            }
+            renderCalendar();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            renderCalendar();
+        }
+
+        function formatDateKey(dateObj) {
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function renderCalendar() {
+            updateSelectorsToCurrentDate();
+
+            const grid = document.getElementById('calendarGrid');
+            const label = document.getElementById('currentLabel');
+            const trackList = document.getElementById('eventTrackList');
+
+            grid.innerHTML = '';
+            trackList.innerHTML = '';
+
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            days.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'cal-day-header';
+                header.textContent = day;
+                grid.appendChild(header);
+            });
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            let visibleStartDate, visibleEndDate;
+
+            if (viewMode === 'month') {
+                label.textContent = `${year}년 ${month + 1}월`;
+
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+
+                visibleStartDate = new Date(firstDay);
+                visibleStartDate.setDate(visibleStartDate.getDate() - firstDay.getDay());
+
+                const totalCells = Math.ceil((firstDay.getDay() + lastDay.getDate()) / 7) * 7;
+                visibleEndDate = new Date(visibleStartDate);
+                visibleEndDate.setDate(visibleStartDate.getDate() + totalCells - 1);
+
+                for (let i = 0; i < totalCells; i++) {
+                    const cellDate = new Date(visibleStartDate);
+                    cellDate.setDate(visibleStartDate.getDate() + i);
+                    renderCell(grid, cellDate, cellDate.getMonth() !== month);
+                }
+            } else {
+                visibleStartDate = new Date(currentDate);
+                visibleStartDate.setDate(currentDate.getDate() - currentDate.getDay());
+                
+                visibleEndDate = new Date(visibleStartDate);
+                visibleEndDate.setDate(visibleStartDate.getDate() + 6);
+
+                label.textContent = `${visibleStartDate.getMonth() + 1}/${visibleStartDate.getDate()} ~ ${visibleEndDate.getMonth() + 1}/${visibleEndDate.getDate()}`;
+
+                for (let i = 0; i < 7; i++) {
+                    const cellDate = new Date(visibleStartDate);
+                    cellDate.setDate(visibleStartDate.getDate() + i);
+                    renderCell(grid, cellDate, false);
+                }
+            }
+
+            const startKey = formatDateKey(visibleStartDate);
+            const endKey = formatDateKey(visibleEndDate);
+
+            const activeEvents = eventsData.filter(ev => ev.end >= startKey && ev.start <= endKey);
+
+            if (activeEvents.length === 0) {
+                trackList.innerHTML = '<div style="color:#aaa; font-size:0.9rem;">이 기간에 예정된 이벤트가 없습니다.</div>';
+            } else {
+                activeEvents.forEach(ev => {
+                    const item = document.createElement('div');
+                    item.className = 'event-track-item';
+                    item.innerHTML = `
+                        <div class="track-badge ${ev.color}"></div>
+                        <span class="track-title">${ev.title}</span>
+                        <span class="track-date">${ev.start} ~ ${ev.end}</span>
+                    `;
+                    trackList.appendChild(item);
+                });
+            }
+        }
+
+        function renderCell(container, dateObj, isOtherMonth) {
+            const cell = document.createElement('div');
+            const todayStr = formatDateKey(new Date());
+            const dateStr = formatDateKey(dateObj);
+
+            let cellClass = 'cal-cell';
+            if (isOtherMonth) cellClass += ' other-month';
+            if (dateStr === todayStr) cellClass += ' is-today';
+            
+            cell.className = cellClass;
+
+            const dateNum = document.createElement('div');
+            dateNum.className = 'date-num';
+            dateNum.textContent = dateObj.getDate();
+            cell.appendChild(dateNum);
+
+            const dotsContainer = document.createElement('div');
+            dotsContainer.className = 'event-dots-container';
+
+            eventsData.forEach(ev => {
+                if (dateStr >= ev.start && dateStr <= ev.end) {
+                    const dot = document.createElement('div');
+                    dot.className = `event-dot ${ev.color}`;
+                    dot.title = ev.title;
+                    dotsContainer.appendChild(dot);
+                }
+            });
+
+            cell.appendChild(dotsContainer);
+            container.appendChild(cell);
+        }
+
+        // 앱 시작 시 초기화
+        initDateSelectors();
+        renderCalendar();
+
+        function drawGacha() {
+            const display = document.getElementById('gachaDisplay');
+            const rand = Math.random() * 100;
+            let result = '';
+            let grade = '';
+
+            if (rand < 3) {
+                result = '★SR★';
+                grade = 'sr';
+            } else if (rand < 18) {
+                result = '♪ R ♪';
+                grade = 'r';
+            } else {
+                result = 'N';
+                grade = 'n';
+            }
+
+            display.textContent = result;
+            display.className = 'gacha-display ' + grade;
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            if (ev.target.classList.contains('tier-items') || ev.target.classList.contains('item-pool')) {
+                ev.target.appendChild(document.getElementById(data));
+            }
+        }
+    </script>
+</body>
+</html>
