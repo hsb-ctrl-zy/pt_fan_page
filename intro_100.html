@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POCKET TWIN 팬 페이지</title>
+    <style>
+        /* 가져오신 온글잎 박다현체 @font-face 적용 */
+        @font-face {
+            font-family: 'OngleipParkDahyeon';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+            font-weight: normal;
+            font-display: swap;
+        }
+
+        /* 기본 스타일 & 그라데이션 배경 */
+        :root {
+            --bg-sky: #C2E9FB;
+            --bg-lavender: #E0C3FC;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #555;
+            --pastel-pink: #FFB6C1;
+            --pastel-blue: #ADD8E6;
+            --pastel-purple: #DCD0FF;
+            --tier-s: #FFD700;
+            --tier-a: #C0C0C0;
+            --tier-b: #CD7F32;
+            
+            /* 폰트 변수를 'OngleipParkDahyeon'으로 지정 */
+            --main-font: 'OngleipParkDahyeon', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--main-font);
+            background: linear-gradient(180deg, var(--bg-sky) 0%, var(--bg-lavender) 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 네비게이션 바 */
+        header {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        header h1 {
+            margin: 0 0 15px 0;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: background 0.3s;
+            font-size: 1.1rem;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: #fff;
+            color: #888;
+        }
+
+        /* 메인 콘텐츠 컨테이너 */
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 1200px;
+            padding: 40px 0;
+        }
+
+        /* 카드 공통 스타일 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            border-bottom: 2px dashed #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        /* A. 캘린더 */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+        .cal-day { font-size: 0.9rem; color: #888; font-weight: bold; }
+        .cal-date { padding: 8px; border-radius: 50%; background: #f9f9f9; cursor: pointer; font-size: 1rem; }
+        .cal-date:hover { background: var(--pastel-blue); }
+        .has-event { background: var(--pastel-pink); color: white; }
+
+        /* B. 이벤트 로그 */
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            background: #f9f9f9;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        .log-item.new { border-left: 4px solid var(--pastel-pink); }
+        .d-day { color: #ff6b81; font-weight: bold; }
+
+        /* C. 가챠 시뮬레이터 */
+        .gacha-display {
+            width: 100%;
+            height: 120px;
+            background: #eee;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #aaa;
+            overflow: hidden;
+        }
+        .gacha-display.sr { background: var(--tier-s); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .gacha-display.r { background: var(--tier-a); color: white; }
+        .gacha-display.n { background: #fff; color: #555; }
+
+        .btn-draw {
+            width: 100%;
+            padding: 12px;
+            background: var(--pastel-pink);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-family: var(--main-font);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .btn-draw:hover { box-shadow: 0 4px 10px rgba(255,182,193,0.5); }
+        .btn-draw:active { transform: scale(0.98); }
+
+        /* D. 티어 리스트 */
+        .tier-container { display: flex; flex-direction: column; gap: 8px; }
+        .tier-row { display: flex; align-items: center; background: #fff; border-radius: 12px; min-height: 50px; padding: 5px; border: 1px solid #eee;}
+        .tier-label { width: 40px; height: 40px; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.2rem; font-weight: bold; margin-right: 10px; }
+        .label-s { background: var(--tier-s); }
+        .label-a { background: var(--tier-a); }
+        .label-b { background: var(--tier-b); }
+        
+        .tier-items { flex: 1; display: flex; gap: 5px; min-height: 40px; }
+        
+        .item-pool { margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 12px; display: flex; gap: 8px; flex-wrap: wrap;}
+        .item { width: 45px; height: 45px; background: var(--pastel-purple); border-radius: 10px; cursor: grab; display: flex; justify-content: center; align-items: center; color: white; font-size: 0.9rem;}
+        .item:active { cursor: grabbing; opacity: 0.7; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>POCKET TWIN FANPAGE</h1>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">홈</a></li>
+                <li><a href="#">캘린더</a></li>
+                <li><a href="#">가챠 시뮬레이터</a></li>
+                <li><a href="#">티어 리스트</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- A. 캘린더 카드 -->
+        <div class="card calendar">
+            <h2>이벤트 캘린더</h2>
+            <div class="calendar-grid">
+                <div class="cal-day">일</div><div class="cal-day">월</div><div class="cal-day">화</div><div class="cal-day">수</div><div class="cal-day">목</div><div class="cal-day">금</div><div class="cal-day">토</div>
+                <div class="cal-date">1</div><div class="cal-date has-event">2</div><div class="cal-date">3</div><div class="cal-date">4</div><div class="cal-date">5</div><div class="cal-date has-event">6</div><div class="cal-date">7</div>
+                <div class="cal-date">8</div><div class="cal-date">9</div><div class="cal-date">10</div><div class="cal-date">11</div><div class="cal-date">12</div><div class="cal-date">13</div><div class="cal-date">14</div>
+            </div>
+        </div>
+
+        <!-- B. 이벤트 로그 카드 -->
+        <div class="card event-log">
+            <h2>이벤트 로그 (+3일)</h2>
+            <div class="log-item new">
+                <span>[가챠] 파스텔 엔젤</span>
+                <span class="d-day">D+1</span>
+            </div>
+            <div class="log-item">
+                <span>[미션] 체리 수집 주간</span>
+                <span class="d-day">D+3</span>
+            </div>
+            <div class="log-item">
+                <span>[복각] 고스 룩 테마</span>
+                <span>종료</span>
+            </div>
+        </div>
+
+        <!-- C. 가챠 시뮬레이터 카드 -->
+        <div class="card gacha">
+            <h2>가챠 시뮬레이터</h2>
+            <div class="gacha-display" id="gachaDisplay">뽑기를 진행하세요</div>
+            <button class="btn-draw" onclick="drawGacha()">1회 뽑기 (도넛 100개)</button>
+        </div>
+
+        <!-- D. 티어 리스트 카드 -->
+        <div class="card tier-list">
+            <h2>티어 리스트 메이커</h2>
+            <div class="tier-container">
+                <div class="tier-row"><div class="tier-label label-s">S</div><div class="tier-items" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+                <div class="tier-row"><div class="tier-label label-a">A</div><div class="tier-items" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+                <div class="tier-row"><div class="tier-label label-b">B</div><div class="tier-items" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+            </div>
+            <div class="item-pool" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="item" draggable="true" ondragstart="drag(event)" id="item1">윙크</div>
+                <div class="item" draggable="true" ondragstart="drag(event)" id="item2">헤어</div>
+                <div class="item" draggable="true" ondragstart="drag(event)" id="item3">안대</div>
+                <div class="item" draggable="true" ondragstart="drag(event)" id="item4">원피스</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function drawGacha() {
+            const display = document.getElementById('gachaDisplay');
+            const rand = Math.random() * 100;
+            let result = '';
+            let grade = '';
+
+            if (rand < 3) {
+                result = '★SR★';
+                grade = 'sr';
+            } else if (rand < 18) {
+                result = '♪ R ♪';
+                grade = 'r';
+            } else {
+                result = 'N';
+                grade = 'n';
+            }
+
+            display.textContent = result;
+            display.className = 'gacha-display ' + grade;
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            if (ev.target.classList.contains('tier-items') || ev.target.classList.contains('item-pool')) {
+                ev.target.appendChild(document.getElementById(data));
+            }
+        }
+    </script>
+</body>
+</html>
