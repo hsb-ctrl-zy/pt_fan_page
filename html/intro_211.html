@@ -1,4 +1,5 @@
 <!-- 타임라인 스타일 수정 -->
+<!-- 아이콘 수정 -->
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -6,6 +7,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>코코롱의 코코리움</title>
+    <!-- 브라우저 탭 아이콘 (Favicon) 설정 -->
+    <link rel="icon" href="https://github.com/hsb-ctrl-zy/pt_fan_page/blob/main/image/happy.png?raw=true" type="image/png">
+    
     <style>
         @font-face {
             font-family: 'OngleipParkDahyeon';
@@ -233,7 +237,7 @@
         .cal-cell {
             background: #fff;
             border-radius: 12px;
-            min-height: 70px; /* 높이를 줄여 정갈하게 조절 */
+            min-height: 70px;
             padding: 8px;
             border: 1px solid #f0f0f0;
             display: flex;
@@ -246,13 +250,18 @@
             opacity: 0.35;
         }
 
+        /* 오늘 날짜 강조 스타일 */
+        .cal-cell.is-today {
+            border: 2px solid var(--pastel-pink);
+            background-color: #fff9fb;
+        }
+
         .date-num {
             font-size: 0.95rem;
             font-weight: bold;
             color: #666;
         }
 
-        /* 날짜 칸 내부 심플 마커 */
         .event-dots-container {
             display: flex;
             gap: 4px;
@@ -270,7 +279,6 @@
         .bg-blue { background: #69C0FF; }
         .bg-purple { background: #B37FEB; }
 
-        /* 이벤트 로그 */
         .log-item {
             display: flex;
             justify-content: space-between;
@@ -283,7 +291,6 @@
         .log-item.new { border-left: 4px solid var(--pastel-pink); }
         .d-day { color: #ff6b81; font-weight: bold; }
 
-        /* 가챠 및 티어 리스트 생략 없음 */
         .gacha-display {
             width: 100%;
             height: 120px;
@@ -369,6 +376,7 @@
                 <div class="cal-controls">
                     <div class="cal-nav">
                         <button onclick="changePeriod(-1)">◀ 이전</button>
+                        <button onclick="goToToday()">오늘</button>
                         <span class="current-label" id="currentLabel">2024년 11월</span>
                         <button onclick="changePeriod(1)">다음 ▶</button>
                     </div>
@@ -378,21 +386,17 @@
                     </div>
                 </div>
 
-                <!-- 상단 타임라인 이벤트 목록 트랙 -->
                 <div class="timeline-overview">
                     <h3>진행 중인 이벤트 타임라인</h3>
                     <div class="event-track-list" id="eventTrackList">
-                        <!-- 스크립트로 상단 트랙 바 추가됨 -->
                     </div>
                 </div>
 
-                <!-- 하단 달력 그리드 -->
                 <div class="timeline-container">
                     <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
             </div>
 
-            <!-- 이벤트 로그 영역 -->
             <div class="card event-log">
                 <h2>이벤트 로그 (+3일)</h2>
                 <div class="log-item new">
@@ -480,6 +484,11 @@
             renderCalendar();
         }
 
+        function goToToday() {
+            currentDate = new Date();
+            renderCalendar();
+        }
+
         function formatDateKey(dateObj) {
             const y = dateObj.getFullYear();
             const m = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -542,7 +551,6 @@
                 }
             }
 
-            // 상단 트랙 패널에 현재 기간과 겹치는 이벤트 표시
             const startKey = formatDateKey(visibleStartDate);
             const endKey = formatDateKey(visibleEndDate);
 
@@ -566,16 +574,20 @@
 
         function renderCell(container, dateObj, isOtherMonth) {
             const cell = document.createElement('div');
-            cell.className = 'cal-cell' + (isOtherMonth ? ' other-month' : '');
+            const todayStr = formatDateKey(new Date());
+            const dateStr = formatDateKey(dateObj);
+
+            let cellClass = 'cal-cell';
+            if (isOtherMonth) cellClass += ' other-month';
+            if (dateStr === todayStr) cellClass += ' is-today';
+            
+            cell.className = cellClass;
 
             const dateNum = document.createElement('div');
             dateNum.className = 'date-num';
             dateNum.textContent = dateObj.getDate();
             cell.appendChild(dateNum);
 
-            const dateStr = formatDateKey(dateObj);
-
-            // 날짜 칸에는 자리를 적게 차지하는 점(Dot) 마커 표시
             const dotsContainer = document.createElement('div');
             dotsContainer.className = 'event-dots-container';
 
